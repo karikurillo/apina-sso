@@ -22,6 +22,8 @@ import java.util.Set;
  */
 public class FileDatastore extends AbstractDatastore {
 
+    protected String dataFile;
+
     class User {
         public String uid;
         public String password;
@@ -35,18 +37,21 @@ public class FileDatastore extends AbstractDatastore {
     @Override
     public void configureDatastore(String realm, Map<String, String> configuration) throws Exception {
         // Get data-file path
-        String dataFile = configuration.get("data-file");
+        dataFile = configuration.get("data-file");
+
 
         if (dataFile == null || dataFile.isEmpty()) {
             throw new Exception("FileDatastore configuration parameter \"data-file\" is missing or empty");
-        } else if (!new File(dataFile).exists()) {
-
         }
 
+        parseDataFile(dataFile);
+    }
+
+    protected void parseDataFile(String dsDataFile) throws Exception {
         // Read and parse data file
         JSONParser parser = new JSONParser();
         try {
-            JSONObject jsonObject = (JSONObject)parser.parse(new FileReader(dataFile));
+            JSONObject jsonObject = (JSONObject)parser.parse(new FileReader(dsDataFile));
 
             String name = (String) jsonObject.get("name");
             System.out.println(name);
@@ -62,9 +67,12 @@ public class FileDatastore extends AbstractDatastore {
             }
 
         } catch (FileNotFoundException e) {
-            throw new Exception("FileDatastore configuration parameter \"data-file\" path is invalid: " + dataFile);
+            throw new Exception("FileDatastore configuration parameter \"data-file\" has invalid path: " + dsDataFile);
 
         } catch (IOException e) {
+            e.printStackTrace();
+
+        } catch (org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
     }
