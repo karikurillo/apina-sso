@@ -1,0 +1,16 @@
+{
+  "configuration": {
+    "realms": {
+      "root": {
+        "datastores": {
+          "name": "Default File datastore",
+          "class": "com.apina.sso.datastores.FileDatastore",
+          "configuration": {
+            "data-file": "",
+            "encrypted": "false"
+          }
+        }
+      }
+    }
+  }
+}

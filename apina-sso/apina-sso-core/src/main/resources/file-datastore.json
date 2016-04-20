@@ -1,0 +1,43 @@
+{
+  "users": [
+    {
+      "uid": "Administrator",
+      "full-name": "System Administrator",
+      "password": "password",
+      "attributes": {
+        "custom-attribute-1": "value-1",
+        "custom-attribute-2": "value-2"
+      },
+      "groups": [
+        "admins",
+        "demo-group"
+      ]
+    },
+    {
+      "uid": "demo",
+      "full-name": "System demo user",
+      "password": "demo",
+      "attributes": {
+        "custom-attribute-3": "value-3"
+      },
+      "groups": [
+        "demo-group"
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "name": "admins",
+      "roles": [
+        "read",
+        "write"
+      ]
+    },
+    {
+      "name": "demo-group",
+      "roles": [
+        "read"
+      ]
+    }
+  ]
+}
