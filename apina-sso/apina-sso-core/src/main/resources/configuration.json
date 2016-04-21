@@ -1,18 +1,20 @@
 {
-    "configuration": {
-        "realms": [
-            {
-                "name": "/",
-                "cached": "false",
-                "datastores": {
-                    "name": "Default File datastore",
-                    "class": "com.apina.sso.datastores.FileDatastore",
-                    "configuration": {
-                        "data-file": "/file-datastore.json",
-                        "encrypted": "false"
-                    }
-                }
+  "configuration": {
+    "realms": [
+      {
+        "name": "/",
+        "cached": "false",
+        "datastores": [
+          {
+            "name": "Default File datastore",
+            "class": "com.apina.sso.datastores.FileDatastore",
+            "configuration": {
+              "data-file": "/file-datastore.json",
+              "encrypted": "false"
             }
+          }
         ]
-    }
+      }
+    ]
+  }
 }
