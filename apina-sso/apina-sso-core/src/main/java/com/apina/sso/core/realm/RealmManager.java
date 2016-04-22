@@ -52,4 +52,8 @@ public class RealmManager {
 
         }
     }
+
+    public void authenticateUser(String realm, String username, String password) {
+
+    }
 }
