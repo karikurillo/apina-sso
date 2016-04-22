@@ -1,9 +1,13 @@
 package com.apina.sso.core.config;
 
+import com.apina.sso.core.realm.RealmManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +19,10 @@ import java.util.Map;
 @Scope("singleton")
 public class CoreConfigurationManager {
 
+    private static final Logger logger = LoggerFactory.getLogger(CoreConfigurationManager.class);
+
+    @Autowired
+    private RealmManager realmManager;
 
     public static ApplicationContext ctx;
 
@@ -25,18 +33,23 @@ public class CoreConfigurationManager {
 
     }
 
-    public void initConfigurationFromFile(String path) throws Exception {
+    public void initialize(String... args) throws Exception {
+        logger.info("Parsing commandline arguments to determine Configurator...");
+        initConfigurationFromFile(args[0]);
+
+        realmManager.initializeDatastores();
+    }
+
+    private void initConfigurationFromFile(String path) throws Exception {
         configurationType = ConfigurationType.FILE;
         configurator = ctx.getBean(FileConfigurator.class);
 
         Map<String, String> configuration = new HashMap<String, String>();
         configuration.put(FileConfigurator.FILE_PATH, path);
         configurator.initialize(configuration);
-
-        System.out.println(configurator);
     }
 
-    public void initConfigurationFromDb() {
+    private void initConfigurationFromDb() {
         configurationType = ConfigurationType.DB;
     }
 

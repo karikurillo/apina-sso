@@ -7,6 +7,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,8 @@ public class FileConfigurator implements Configurator {
 
     public final static String FILE_PATH = "FILE_PATH";
 
+    private static final Logger logger = LoggerFactory.getLogger(FileConfigurator.class);
+
     @Autowired
     private RealmManager realmManager;
 
@@ -34,6 +38,7 @@ public class FileConfigurator implements Configurator {
     }
 
     private void parseConfiguration(String configurationFile) throws Exception {
+        logger.info("Parsing configuration from file: " + configurationFile);
         // Read and parse data file
         JSONParser parser = new JSONParser();
         try {
@@ -72,7 +77,6 @@ public class FileConfigurator implements Configurator {
         DatastoreItem datastore = new DatastoreItem();
         datastore.setName((String)datastoreJson.get("name"));
         datastore.setClassName((String) datastoreJson.get("class"));
-        //JSONArray configuration = (JSONArray)datastoreJson.get("configuration");
         JSONObject configuration = (JSONObject)datastoreJson.get("configuration");
         for (Object key : configuration.keySet()) {
             datastore.addConfigurationParameter((String)key, (String)configuration.get(key));
