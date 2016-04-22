@@ -1,4 +1,4 @@
-package com.apina.sso.core.services.v1.openam.legacy;
+package com.apina.sso.core.services.openam.legacy;
 
 /**
  * Created by Kari Kurillo on 22.4.2016.

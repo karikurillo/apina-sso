@@ -2,16 +2,14 @@ package com.apina.sso.datastores;
 
 import com.apina.sso.api.AbstractDatastore;
 import com.apina.sso.api.AuthenticationEnum;
-import com.apina.sso.api.AuthenticationResponse;
+import com.apina.sso.api.DatastoreAuthenticationResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -78,8 +76,8 @@ public class FileDatastore extends AbstractDatastore {
     }
 
     @Override
-    public AuthenticationResponse authenticateUser(String username, String password) throws Exception {
-        return new AuthenticationResponse(AuthenticationEnum.USER_NOT_FOUND);
+    public DatastoreAuthenticationResponse authenticateUser(String username, String password) throws Exception {
+        return new DatastoreAuthenticationResponse(AuthenticationEnum.USER_NOT_FOUND);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.apina.sso.datastores;
 
 import com.apina.sso.api.AbstractDatastore;
-import com.apina.sso.api.AuthenticationResponse;
+import com.apina.sso.api.DatastoreAuthenticationResponse;
 
 import java.util.Map;
 
@@ -15,7 +15,7 @@ public class JdbcDatastore extends AbstractDatastore {
     }
 
     @Override
-    public AuthenticationResponse authenticateUser(String username, String password) throws Exception {
+    public DatastoreAuthenticationResponse authenticateUser(String username, String password) throws Exception {
         return null;
     }
 

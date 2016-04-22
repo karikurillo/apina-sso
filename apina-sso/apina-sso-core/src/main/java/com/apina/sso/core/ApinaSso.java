@@ -16,7 +16,8 @@ public class ApinaSso implements CommandLineRunner {
     private CoreConfigurationManager configurationManager;
 
     public static void main(String args[]) {
-        SpringApplication.run(ApinaSso.class, args);
+        SpringApplication
+                .run(ApinaSso.class, args);
     }
 
     @Override
