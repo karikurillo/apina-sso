@@ -9,6 +9,7 @@ import java.util.Map;
  * Created by Kari Kurillo on 21/04/16.
  */
 public class DatastoreItem {
+    private String id;
     private String name;
     private String className;
     private Datastore datastore;
@@ -44,5 +45,23 @@ public class DatastoreItem {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append("DatastoreItem").append(",");
+        s.append("name=").append(name).append(",");
+        s.append("id=").append(id).append(",");
+        s.append("classname=").append(className).append("]");
+
+        return s.toString();
     }
 }

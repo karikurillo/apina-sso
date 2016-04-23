@@ -1,5 +1,6 @@
 package com.apina.sso.core.realm;
 
+import com.apina.sso.api.DatastoreAuthResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -53,7 +54,40 @@ public class RealmManager {
         }
     }
 
-    public void authenticateUser(String realm, String username, String password) {
+    public RealmAuthResponse authenticateUser(String realmName, String username, String password) throws Exception {
+        RealmItem realm = realms.get(realmName);
 
+        if (realm == null) throw new Exception("Invalid realm name: " + realmName);
+
+        RealmAuthResponse response = new RealmAuthResponse(realmName);
+        logger.trace("Authenticating to realm \"" + realmName + "\"...");
+        for (DatastoreItem ds : realm.getDatastores()) {
+            logger.trace("Authenticating to datastore \"" + ds.getName() + "\"...");
+            DatastoreAuthResponse dsResponse = ds.getDatastore().authenticate(username, password);
+            switch (dsResponse.getDatastoreAuthStatus()) {
+                case LOGIN_SUCCESSFUL:
+                    response.readDatastoreResponse(ds, dsResponse);
+                    response.setRealmAuthStatus(RealmAuthStatus.LOGIN_SUCCESSFUL);
+                    return response;
+
+                case LOGIN_FAILED:
+                    response.readDatastoreResponse(ds, dsResponse);
+                    response.setRealmAuthStatus(RealmAuthStatus.LOGIN_FAILED);
+                    return response;
+
+                case INVALID_PASSWORD:
+                    response.readDatastoreResponse(ds, dsResponse);
+                    response.setRealmAuthStatus(RealmAuthStatus.INVALID_PASSWORD);
+                    return response;
+
+
+                case USER_NOT_FOUND:
+                    // Continue to next datastore
+                    logger.debug("User \"" + username + "\" not found from datastore " + ds.toString());
+                    break;
+            }
+
+        }
+        return response;
     }
 }

@@ -1,8 +1,8 @@
 package com.apina.sso.datastores;
 
 import com.apina.sso.api.AbstractDatastore;
-import com.apina.sso.api.AuthenticationEnum;
-import com.apina.sso.api.DatastoreAuthenticationResponse;
+import com.apina.sso.api.DatastoreAuthResponse;
+import com.apina.sso.api.DatastoreAuthStatus;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -15,12 +15,18 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  */
 public class FileDatastore extends AbstractDatastore {
 
+    private static final Logger logger = LoggerFactory.getLogger(FileDatastore.class);
+
     protected String dataFile;
+    protected boolean cached = true;
 
     class User {
         public String uid;
@@ -30,22 +36,25 @@ public class FileDatastore extends AbstractDatastore {
         public Set<String> roles;
     }
 
-    protected Map<String, User> users = new HashMap<String, User>();
+    protected Map<String, User> userCache = new HashMap<String, User>();
 
     @Override
     public void configureDatastore(String realm, Map<String, String> configuration) throws Exception {
+
+        logger.info("Configuring FileDatastore");
+
         // Get data-file path
         dataFile = configuration.get("data-file");
-
-
         if (dataFile == null || dataFile.isEmpty()) {
             throw new Exception("FileDatastore configuration parameter \"data-file\" is missing or empty");
         }
 
-        parseDataFile(dataFile);
+        if (cached) parseDataFile(dataFile);
     }
 
-    protected void parseDataFile(String dsDataFile) throws Exception {
+    protected Map<String, User> parseDataFile(String dsDataFile) throws Exception {
+        Map<String, User> users = new HashMap<String, User>();
+        logger.info("Parsing FileDatastore data-file " + dsDataFile + "...");
         // Read and parse data file
         JSONParser parser = new JSONParser();
         try {
@@ -73,11 +82,14 @@ public class FileDatastore extends AbstractDatastore {
         } catch (org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
+        return users;
     }
 
     @Override
-    public DatastoreAuthenticationResponse authenticateUser(String username, String password) throws Exception {
-        return new DatastoreAuthenticationResponse(AuthenticationEnum.USER_NOT_FOUND);
+    public DatastoreAuthResponse authenticateUser(String username, String password) throws Exception {
+        Map<String, User> users = cached ? this.userCache : parseDataFile(this.dataFile);
+
+        return new DatastoreAuthResponse(DatastoreAuthStatus.USER_NOT_FOUND);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.apina.sso.core.security;
 
+import com.apina.sso.core.realm.RealmAuthResponse;
+import com.apina.sso.core.realm.RealmAuthStatus;
 import com.apina.sso.core.realm.RealmManager;
 import com.apina.sso.core.session.SessionManager;
 import org.slf4j.Logger;
@@ -26,7 +28,10 @@ public class SecurityManager {
     public SecurityManager() {}
 
     public void authenticateUser(String realm, String username, String password) throws Exception {
-        realmManager.authenticateUser(realm, username, password);
-        sessionManager.createSession("", "", null);
+        RealmAuthResponse realmAuthResponse = realmManager.authenticateUser(realm, username, password);
+
+        if (realmAuthResponse.getRealmAuthStatus() == RealmAuthStatus.LOGIN_SUCCESSFUL) {
+            sessionManager.createSession(realm, username, null);
+        }
     }
 }
