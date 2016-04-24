@@ -35,5 +35,10 @@
           <artifactId>apina-sso-api</artifactId>
           <version>1.0-SNAPSHOT</version>
       </dependency>
+      <dependency>
+          <groupId>com.apina.sso</groupId>
+          <artifactId>apina-sso-datastores</artifactId>
+          <version>1.0-SNAPSHOT</version>
+      </dependency>
   </dependencies>
 </project>

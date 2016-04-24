@@ -41,4 +41,16 @@ public class DatastoreAuthResponse {
     public Map<String, String> getSessionAttributes() {
         return sessionAttributes;
     }
+
+    public void setDatastoreAuthStatus(DatastoreAuthStatus datastoreAuthStatus) {
+        this.datastoreAuthStatus = datastoreAuthStatus;
+    }
+
+    public void setResponseAttributes(Map<String, String> responseAttributes) {
+        this.responseAttributes = responseAttributes;
+    }
+
+    public void setSessionAttributes(Map<String, String> sessionAttributes) {
+        this.sessionAttributes = sessionAttributes;
+    }
 }

@@ -1,6 +1,8 @@
 package com.apina.sso.core.realm;
 
+import com.apina.sso.api.Datastore;
 import com.apina.sso.api.DatastoreAuthResponse;
+import com.apina.sso.datastores.FileDatastore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -45,7 +47,11 @@ public class RealmManager {
             for (DatastoreItem ds : entry.getValue().getDatastores()) {
                 logger.info("Configuring datastore \"" + ds.getName() +"\"...");
                 try {
+                    // @ TODO Dynamic creation
+                    Datastore dsImpl = new FileDatastore();
+                    dsImpl.configure(entry.getKey(), ds.getConfiguration());
 
+                    ds.setDatastore(dsImpl);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

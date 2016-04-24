@@ -10,10 +10,7 @@ import org.json.simple.parser.JSONParser;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +31,7 @@ public class FileDatastore extends AbstractDatastore {
         public String fullName;
         public Set<String> groups;
         public Set<String> roles;
+        public Map<String, String> attributes;
     }
 
     protected Map<String, User> userCache = new HashMap<String, User>();
@@ -60,19 +58,20 @@ public class FileDatastore extends AbstractDatastore {
         try {
             JSONObject jsonObject = (JSONObject)parser.parse(new FileReader(dsDataFile));
 
-            String name = (String) jsonObject.get("name");
-            System.out.println(name);
+            Map<String, List<String>> groups = parseGroups((JSONArray) jsonObject.get("groups"));
+            JSONArray usersArray = (JSONArray)jsonObject.get("users");
 
-            long age = (Long) jsonObject.get("age");
-            System.out.println(age);
-
-            // loop array
-            JSONArray msg = (JSONArray) jsonObject.get("messages");
-            Iterator<String> iterator = msg.iterator();
-            while (iterator.hasNext()) {
-                System.out.println(iterator.next());
+            for (Object user : usersArray) {
+                User u = new User();
+                u.uid = (String)((JSONObject)user).get("uid");
+                u.fullName = (String)((JSONObject)user).get("full-name");
+                u.password = (String)((JSONObject)user).get("password");
+                parseUserGroups(u, (JSONArray)((JSONObject)user).get("groups"), groups);
+                parseUserAttributes(u, (JSONArray)((JSONObject)user).get("attributes"));
+                users.put(u.uid, u);
             }
 
+            logger.info("FileDatastore data-file parsing done. User count: " + users.size());
         } catch (FileNotFoundException e) {
             throw new Exception("FileDatastore configuration parameter \"data-file\" has invalid path: " + dsDataFile);
 
@@ -85,11 +84,52 @@ public class FileDatastore extends AbstractDatastore {
         return users;
     }
 
+    protected void parseUserGroups(User user, JSONArray groupsArray, Map<String, List<String>> groups) {
+        user.groups = new HashSet<String>();
+        user.roles = new HashSet<String>();
+        for (Object group : groupsArray) {
+            user.groups.add((String)group);
+            user.roles.addAll(groups.get((String)group));
+        }
+    }
+
+    protected void parseUserAttributes(User user, JSONArray attributessArray) {
+        user.attributes = new HashMap<String, String>();
+        //for () {
+
+        //}
+    }
+
+    protected Map<String, List<String>> parseGroups(JSONArray groupsArray) {
+        Map<String, List<String>> groups = new HashMap<String, List<String>>();
+        for (Object group : groupsArray) {
+            groups.put((String)((JSONObject)group).get("name"), parseRoles( (JSONArray)((JSONObject) group).get("roles") ));
+        }
+        return groups;
+    }
+
+    protected List<String> parseRoles(JSONArray rolesArray) {
+        // @ TODO Can this handle empty list of roles (no roles)
+        List<String> roles = Arrays.asList((String[])rolesArray.toArray(new String[rolesArray.size()]));
+        return roles;
+    }
+
     @Override
     public DatastoreAuthResponse authenticateUser(String username, String password) throws Exception {
         Map<String, User> users = cached ? this.userCache : parseDataFile(this.dataFile);
+        DatastoreAuthResponse response = new DatastoreAuthResponse(DatastoreAuthStatus.USER_NOT_FOUND);
+        User user = users.get(username);
 
-        return new DatastoreAuthResponse(DatastoreAuthStatus.USER_NOT_FOUND);
+        if (user != null) {
+            // Check password
+            if (user.password.compareTo(password) == 0) {
+                response.setDatastoreAuthStatus(DatastoreAuthStatus.LOGIN_SUCCESSFUL);
+            } else {
+                response.setDatastoreAuthStatus(DatastoreAuthStatus.INVALID_PASSWORD);
+            }
+        }
+
+        return response;
     }
 
     @Override
