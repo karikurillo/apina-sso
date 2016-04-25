@@ -5,7 +5,6 @@ import com.apina.sso.core.security.SecurityManager;
 import com.apina.sso.core.services.v1.pojos.RestResponseAuthentication;
 import com.apina.sso.core.session.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

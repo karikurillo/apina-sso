@@ -3,6 +3,7 @@ package com.apina.sso.core.config;
 import com.apina.sso.core.realm.DatastoreItem;
 import com.apina.sso.core.realm.RealmItem;
 import com.apina.sso.core.realm.RealmManager;
+import com.apina.sso.core.session.SessionManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -30,7 +31,10 @@ public class FileConfigurator implements Configurator {
     @Autowired
     private RealmManager realmManager;
 
-    public FileConfigurator() {    }
+    @Autowired
+    private SessionManager sessionManager;
+
+    public FileConfigurator() { /* Nothing here */    }
 
     @Override
     public void initialize(Map<String, String> configuration) throws Exception {
@@ -44,12 +48,18 @@ public class FileConfigurator implements Configurator {
         try {
             JSONObject jsonObject = (JSONObject)parser.parse(new FileReader(configurationFile));
             JSONObject configuration = (JSONObject)jsonObject.get("configuration");
+            long maxSessionIdleTime = (Long)configuration.get("maxSessionIdleTime");
+            long maxSessionTime = (Long)configuration.get("maxSessionTime");
+            sessionManager.setMaxSessionIdleTime(maxSessionIdleTime);
+            sessionManager.setMaxSessionTime(maxSessionTime);
+
             JSONArray realms = (JSONArray)configuration.get("realms");
 
             for (Object realmJson : realms) {
                 RealmItem realm = parseRealm((JSONObject)realmJson);
                 realmManager.addRealm(realm);
             }
+
 
         } catch (FileNotFoundException e) {
             throw new Exception("FileConfigurator configuration file has invalid path: " + configurationFile);

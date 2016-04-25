@@ -22,6 +22,8 @@ public class FileDatastore extends AbstractDatastore {
 
     private static final Logger logger = LoggerFactory.getLogger(FileDatastore.class);
 
+    public static final String ATTRIBUTE_DATA_FILE = "dataFile";
+
     protected String dataFile;
     protected boolean cached = true;
 
@@ -42,9 +44,9 @@ public class FileDatastore extends AbstractDatastore {
         logger.info("Configuring FileDatastore");
 
         // Get data-file path
-        dataFile = configuration.get("data-file");
+        dataFile = configuration.get(FileDatastore.ATTRIBUTE_DATA_FILE);
         if (dataFile == null || dataFile.isEmpty()) {
-            throw new Exception("FileDatastore configuration parameter \"data-file\" is missing or empty");
+            throw new Exception("FileDatastore configuration parameter \"" + FileDatastore.ATTRIBUTE_DATA_FILE + "\" is missing or empty");
         }
 
         if (cached) parseDataFile(dataFile);
@@ -52,7 +54,7 @@ public class FileDatastore extends AbstractDatastore {
 
     protected Map<String, User> parseDataFile(String dsDataFile) throws Exception {
         Map<String, User> users = new HashMap<String, User>();
-        logger.info("Parsing FileDatastore data-file " + dsDataFile + "...");
+        logger.info("Parsing FileDatastore data from file: " + dsDataFile + "...");
         // Read and parse data file
         JSONParser parser = new JSONParser();
         try {
@@ -64,16 +66,16 @@ public class FileDatastore extends AbstractDatastore {
             for (Object user : usersArray) {
                 User u = new User();
                 u.uid = (String)((JSONObject)user).get("uid");
-                u.fullName = (String)((JSONObject)user).get("full-name");
+                u.fullName = (String)((JSONObject)user).get("fullName");
                 u.password = (String)((JSONObject)user).get("password");
                 parseUserGroups(u, (JSONArray)((JSONObject)user).get("groups"), groups);
-                parseUserAttributes(u, (JSONArray)((JSONObject)user).get("attributes"));
+                parseUserAttributes(u, (JSONObject)((JSONObject)user).get("attributes"));
                 users.put(u.uid, u);
             }
 
             logger.info("FileDatastore data-file parsing done. User count: " + users.size());
         } catch (FileNotFoundException e) {
-            throw new Exception("FileDatastore configuration parameter \"data-file\" has invalid path: " + dsDataFile);
+            throw new Exception("FileDatastore configuration parameter \"" + FileDatastore.ATTRIBUTE_DATA_FILE + "\" has invalid path: " + dsDataFile);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,11 +95,11 @@ public class FileDatastore extends AbstractDatastore {
         }
     }
 
-    protected void parseUserAttributes(User user, JSONArray attributessArray) {
+    protected void parseUserAttributes(User user, JSONObject attributes) {
         user.attributes = new HashMap<String, String>();
-        //for () {
-
-        //}
+        for (Object key : attributes.keySet()) {
+            user.attributes.put((String)key, (String)attributes.get(key));
+        }
     }
 
     protected Map<String, List<String>> parseGroups(JSONArray groupsArray) {

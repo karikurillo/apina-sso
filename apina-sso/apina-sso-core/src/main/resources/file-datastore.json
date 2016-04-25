@@ -2,7 +2,7 @@
   "users": [
     {
       "uid": "Administrator",
-      "full-name": "System Administrator",
+      "fullName": "System Administrator",
       "password": "password",
       "attributes": {
         "custom-attribute-1": "value-1",
@@ -15,7 +15,7 @@
     },
     {
       "uid": "demo",
-      "full-name": "System demo user",
+      "fullName": "System demo user",
       "password": "demo",
       "attributes": {
         "custom-attribute-3": "value-3"

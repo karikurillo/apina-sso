@@ -1,5 +1,7 @@
 {
   "configuration": {
+    "maxSessionIdleTime": 30,
+    "maxSessionTime": 120,
     "realms": [
       {
         "name": "/",
@@ -9,7 +11,7 @@
             "name": "Default File datastore",
             "class": "com.apina.sso.datastores.FileDatastore",
             "configuration": {
-              "data-file": "/file-datastore.json",
+              "dataFile": "/file-datastore.json",
               "encrypted": "false"
             }
           }
