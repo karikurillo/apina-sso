@@ -49,7 +49,7 @@ public class FileDatastore extends AbstractDatastore {
             throw new Exception("FileDatastore configuration parameter \"" + FileDatastore.ATTRIBUTE_DATA_FILE + "\" is missing or empty");
         }
 
-        if (cached) parseDataFile(dataFile);
+        if (cached) this.userCache = parseDataFile(dataFile);
     }
 
     protected Map<String, User> parseDataFile(String dsDataFile) throws Exception {

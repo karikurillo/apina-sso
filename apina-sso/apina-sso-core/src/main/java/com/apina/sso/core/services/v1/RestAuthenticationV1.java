@@ -1,14 +1,12 @@
 package com.apina.sso.core.services.v1;
 
 import com.apina.sso.core.realm.RealmManager;
+import com.apina.sso.core.security.AuthenticationResponse;
 import com.apina.sso.core.security.SecurityManager;
 import com.apina.sso.core.services.v1.pojos.RestResponseAuthentication;
 import com.apina.sso.core.session.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -28,27 +26,30 @@ public class RestAuthenticationV1 {
     }
 
     @RequestMapping(value = "/v1/authenticate", method = RequestMethod.GET)
-    public RestResponseAuthentication authenticate() {
-        return authenticateUser(RealmManager.ROOT_REALM, "", "");
+    public RestResponseAuthentication authenticate(@RequestHeader(value="X-ApinaSSO-Username") String username, @RequestHeader(value="X-ApinaSSO-Password") String password) {
+        return authenticateUser(RealmManager.ROOT_REALM, username, password);
     }
 
     @RequestMapping(value = "/v1/{realm}/authenticate", method = RequestMethod.GET)
-    public RestResponseAuthentication authenticate(@PathVariable(value = "realm") String realm) {
-        return authenticateUser(realm, "", "");
+    public RestResponseAuthentication authenticate(@RequestHeader(value="X-ApinaSSO-Username") String username, @RequestHeader(value="X-ApinaSSO-Password") String password, @PathVariable(value = "realm") String realm) {
+        return authenticateUser(realm, username, password);
     }
 
     private RestResponseAuthentication authenticateUser(String realm, String username, String password) {
         // @TODO Add support for custom authentication parameters
-
+        AuthenticationResponse authenticationResponse = null;
         try {
-            securityManager.authenticateUser("", "", "");
+            authenticationResponse = securityManager.authenticateUser(realm, username, password);
         } catch (Exception ex) {
             ex.printStackTrace();
+            throw new RuntimeException("Authentication failed: " + ex.getMessage());
         }
 
-        RestResponseAuthentication response = new RestResponseAuthentication(sessionManager.generateToken(), "All is good");
-        response.addAttribute("custom-attribute-1", "custom-value-1");
-        response.addAttribute("realm", realm);
-        return response;
+        if (authenticationResponse != null && authenticationResponse.isAuthenticated()) {
+            RestResponseAuthentication response = new RestResponseAuthentication(authenticationResponse.getToken(), "Authentication successful");
+            response.copyAttributes(response.getAttributes());
+            return response;
+        }
+        return null;
     }
 }

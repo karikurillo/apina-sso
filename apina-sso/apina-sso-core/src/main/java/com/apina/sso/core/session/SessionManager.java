@@ -25,6 +25,7 @@ public class SessionManager {
         String token = generateToken();
 
         // Create session data item
+        SessionData session = new SessionData(token, sessionAttributes);
 
         // Add session to cache
 

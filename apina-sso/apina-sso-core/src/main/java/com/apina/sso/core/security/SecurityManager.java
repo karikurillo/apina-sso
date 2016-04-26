@@ -27,11 +27,13 @@ public class SecurityManager {
 
     public SecurityManager() {}
 
-    public void authenticateUser(String realm, String username, String password) throws Exception {
+    public AuthenticationResponse authenticateUser(String realm, String username, String password) throws Exception {
         RealmAuthResponse realmAuthResponse = realmManager.authenticateUser(realm, username, password);
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+        authenticationResponse.setToken(sessionManager.createSession(realm, username, null));
+        authenticationResponse.setRealmAuthResponse(realmAuthResponse);
+        authenticationResponse.setAuthenticated(realmAuthResponse.getRealmAuthStatus() == RealmAuthStatus.LOGIN_SUCCESSFUL);
 
-        if (realmAuthResponse.getRealmAuthStatus() == RealmAuthStatus.LOGIN_SUCCESSFUL) {
-            sessionManager.createSession(realm, username, null);
-        }
+        return authenticationResponse;
     }
 }

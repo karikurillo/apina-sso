@@ -1,5 +1,7 @@
 package com.apina.sso.core.services.v1.pojos;
 
+import com.apina.sso.core.realm.RealmItem;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,5 +31,11 @@ public class RestResponseAuthentication {
 
     public Map<String, String> getAttributes() {
         return this.attributes;
+    }
+
+    public void copyAttributes(Map<String, String> authAttributes) {
+        for (Map.Entry<String, String> entry : authAttributes.entrySet()) {
+            this.attributes.put(entry.getKey(), entry.getValue());
+        }
     }
 }
