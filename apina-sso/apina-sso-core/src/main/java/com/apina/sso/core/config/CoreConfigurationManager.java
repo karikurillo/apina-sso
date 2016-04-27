@@ -1,6 +1,7 @@
 package com.apina.sso.core.config;
 
 import com.apina.sso.core.realm.RealmManager;
+import com.apina.sso.core.session.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -24,6 +25,9 @@ public class CoreConfigurationManager {
     @Autowired
     private RealmManager realmManager;
 
+    @Autowired
+    private SessionManager sessionManager;
+
     public static ApplicationContext ctx;
 
     private ConfigurationType configurationType;
@@ -38,6 +42,7 @@ public class CoreConfigurationManager {
         initConfigurationFromFile(args[0]);
 
         realmManager.initializeDatastores();
+        sessionManager.initializeCache();
     }
 
     private void initConfigurationFromFile(String path) throws Exception {

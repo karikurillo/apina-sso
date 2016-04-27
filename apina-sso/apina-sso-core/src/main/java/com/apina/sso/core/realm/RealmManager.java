@@ -96,4 +96,8 @@ public class RealmManager {
         }
         return response;
     }
+
+    public Set<String> getRealmNames() {
+        return realms.keySet();
+    }
 }
