@@ -36,4 +36,14 @@ public class SecurityManager {
 
         return authenticationResponse;
     }
+
+    public boolean logoutToken(String token) {
+        try {
+            sessionManager.logout(token);
+        } catch (Exception e) {
+            logger.error("Could not logout session with token " + token);
+            return false;
+        }
+        return true;
+    }
 }

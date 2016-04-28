@@ -51,6 +51,8 @@ public class SessionManager {
                 .withCache("sessionCache", CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, SessionData.class, ResourcePoolsBuilder.heap(10)))
                 .build(true);
 
+        // @ TODO Add listener for expiring cache items
+
         /*
         cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
         for (String realmName : realmManager.getRealmNames()) {
@@ -64,6 +66,10 @@ public class SessionManager {
 
     public boolean isTokenValid(String token) {
         return getSessionCache("sessionCache").containsKey(token);
+    }
+
+    public void logout(String token) throws Exception {
+        getSessionCache("sessionCache").remove(token);
     }
 
     private Cache<String, SessionData> getSessionCache(String name) {

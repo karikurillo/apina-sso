@@ -17,6 +17,7 @@ public class RestResponseAuthentication {
         this.token = token;
         this.message = message;
     }
+
     public void addAttribute(String key, String value) {
         this.attributes.put(key, value);
     }
