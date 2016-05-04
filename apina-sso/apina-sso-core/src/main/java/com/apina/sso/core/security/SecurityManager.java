@@ -39,11 +39,10 @@ public class SecurityManager {
 
     public boolean logoutToken(String token) {
         try {
-            sessionManager.logout(token);
+            return sessionManager.logout(token);
         } catch (Exception e) {
             logger.error("Could not logout session with token " + token);
             return false;
         }
-        return true;
     }
 }

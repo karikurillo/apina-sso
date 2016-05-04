@@ -36,7 +36,7 @@ public class RestAuthenticationV1 {
     }
 
     private RestResponseAuthentication authenticateUser(String realm, String username, String password) {
-        // @TODO Add support for custom authentication parameters
+        // @TODO Add support for custom authentication parameters in the request body
         AuthenticationResponse authenticationResponse = null;
         try {
             authenticationResponse = securityManager.authenticateUser(realm, username, password);

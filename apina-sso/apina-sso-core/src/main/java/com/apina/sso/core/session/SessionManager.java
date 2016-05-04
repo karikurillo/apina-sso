@@ -12,8 +12,11 @@ import org.springframework.stereotype.Component;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Base64Utils;
 
+import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  *
@@ -34,7 +37,7 @@ public class SessionManager {
 
     public String createSession(String realm, String username, Map<String, String> sessionAttributes) throws Exception {
         // Generate id token for the session
-        String token = generateToken();
+        String token = generateToken(realm);
 
         // Create session data item
         SessionData session = new SessionData(token, sessionAttributes);
@@ -68,17 +71,29 @@ public class SessionManager {
         return getSessionCache("sessionCache").containsKey(token);
     }
 
-    public void logout(String token) throws Exception {
-        getSessionCache("sessionCache").remove(token);
+    public boolean logout(String token) throws Exception {
+        Cache<String, SessionData> cache = getSessionCache("sessionCache");
+        if (cache.containsKey(token)) {
+            cache.remove(token);
+            return true;
+        }
+        return false;
     }
 
     private Cache<String, SessionData> getSessionCache(String name) {
         return cacheManager.getCache(name, String.class, SessionData.class);
     }
 
-    public String generateToken() {
-        // @ TODO encode realm name and session start time to the token
-        return "token" + System.nanoTime();
+    public String generateToken(String realm) {
+        String id = UUID.randomUUID().toString();
+        byte[] encodedBytes = Base64Utils.encode((id + ":" + realm).getBytes());
+        return new String(encodedBytes, Charset.forName("UTF-8"));
+    }
+
+    private String getRealmFromToken(String token) {
+        byte[] decodedBytes = Base64Utils.decode(token.getBytes());
+        String decodedToken = new String(decodedBytes, Charset.forName("UTF-8"));
+        return decodedToken.substring(decodedToken.indexOf(":"));
     }
 
     public long getMaxSessionIdleTime() {
