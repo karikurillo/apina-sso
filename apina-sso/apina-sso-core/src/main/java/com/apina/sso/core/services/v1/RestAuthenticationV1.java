@@ -15,15 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class RestAuthenticationV1 {
 
     @Autowired
-    private SessionManager sessionManager;
-
-    @Autowired
     private SecurityManager securityManager;
-
-    @RequestMapping(value = "/v1/test", method = RequestMethod.GET)
-    public String message() {
-        return "Hello World!";
-    }
 
     @RequestMapping(value = "/v1/authenticate", method = RequestMethod.GET)
     public RestResponseAuthentication authenticate(@RequestHeader(value="X-ApinaSSO-Username") String username, @RequestHeader(value="X-ApinaSSO-Password") String password) {
