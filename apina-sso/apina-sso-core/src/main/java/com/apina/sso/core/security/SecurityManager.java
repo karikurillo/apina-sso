@@ -54,7 +54,7 @@ public class SecurityManager {
         attributesResponse.setSessionInfo(sessionInfo);
 
         if (!sessionInfo.isSessionValid()) {
-            throw new RuntimeException("Not a valid session");
+            throw new RuntimeException("Not a valid token");
         } else {
             RealmAttrsResponse realmAttrsResponse = realmManager.getUserAttributes(sessionInfo.getRealm(), sessionInfo.getUsername(), sessionInfo.getToken());
             attributesResponse.setGroups( realmAttrsResponse.getGroups() );
