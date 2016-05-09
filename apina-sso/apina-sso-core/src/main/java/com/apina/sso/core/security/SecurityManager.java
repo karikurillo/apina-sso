@@ -1,8 +1,10 @@
 package com.apina.sso.core.security;
 
+import com.apina.sso.core.realm.RealmAttrsResponse;
 import com.apina.sso.core.realm.RealmAuthResponse;
 import com.apina.sso.core.realm.RealmAuthStatus;
 import com.apina.sso.core.realm.RealmManager;
+import com.apina.sso.core.session.SessionInfo;
 import com.apina.sso.core.session.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,5 +46,22 @@ public class SecurityManager {
             logger.error("Could not logout session with token " + token);
             return false;
         }
+    }
+
+    public AttributesResponse getUserAttributes(String token) throws Exception {
+        AttributesResponse attributesResponse = new AttributesResponse();
+        SessionInfo sessionInfo = sessionManager.getSessionInfo(token);
+        attributesResponse.setSessionInfo(sessionInfo);
+
+        if (!sessionInfo.isSessionValid()) {
+            throw new RuntimeException("Not a valid session");
+        } else {
+            RealmAttrsResponse realmAttrsResponse = realmManager.getUserAttributes(sessionInfo.getRealm(), sessionInfo.getUsername(), sessionInfo.getToken());
+            attributesResponse.setGroups( realmAttrsResponse.getGroups() );
+            attributesResponse.setRoles( realmAttrsResponse.getRoles() );
+            attributesResponse.setUserAttributes( realmAttrsResponse.getUserAttributes() );
+        }
+
+        return attributesResponse;
     }
 }

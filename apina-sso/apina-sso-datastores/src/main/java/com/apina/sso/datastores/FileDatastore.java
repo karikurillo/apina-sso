@@ -1,6 +1,7 @@
 package com.apina.sso.datastores;
 
 import com.apina.sso.api.AbstractDatastore;
+import com.apina.sso.api.DatastoreAttrsResponse;
 import com.apina.sso.api.DatastoreAuthResponse;
 import com.apina.sso.api.DatastoreAuthStatus;
 import org.json.simple.JSONArray;
@@ -118,9 +119,8 @@ public class FileDatastore extends AbstractDatastore {
 
     @Override
     public DatastoreAuthResponse authenticateUser(String username, String password) throws Exception {
-        Map<String, User> users = cached ? this.userCache : parseDataFile(this.dataFile);
         DatastoreAuthResponse response = new DatastoreAuthResponse(DatastoreAuthStatus.USER_NOT_FOUND);
-        User user = users.get(username);
+        User user = getUsers().get(username);
 
         if (user != null) {
             // Check password
@@ -135,7 +135,20 @@ public class FileDatastore extends AbstractDatastore {
     }
 
     @Override
-    public Map<String, String> getUserAttributes(String username, String token) throws Exception {
-        return null;
+    public DatastoreAttrsResponse getUserAttributes(String username, String token) throws Exception {
+        DatastoreAttrsResponse datastoreAttrsResponse = new DatastoreAttrsResponse();
+        User user = getUsers().get(username);
+
+        if (user != null) {
+            datastoreAttrsResponse.setGroups(user.groups);
+            datastoreAttrsResponse.setRoles(user.roles);
+            datastoreAttrsResponse.setAttributes(user.attributes);
+        }
+
+        return datastoreAttrsResponse;
+    }
+
+    protected Map<String, User> getUsers() throws Exception {
+        return cached ? this.userCache : parseDataFile(this.dataFile);
     }
 }

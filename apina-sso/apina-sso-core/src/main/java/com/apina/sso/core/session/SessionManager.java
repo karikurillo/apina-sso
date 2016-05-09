@@ -40,7 +40,7 @@ public class SessionManager {
         String token = generateToken(realm);
 
         // Create session data item
-        SessionData session = new SessionData(token, sessionAttributes);
+        SessionData session = new SessionData(realm, username, token, sessionAttributes);
 
         // Add session to cache
         getSessionCache("sessionCache").put(token, session);
@@ -82,6 +82,18 @@ public class SessionManager {
 
     private Cache<String, SessionData> getSessionCache(String name) {
         return cacheManager.getCache(name, String.class, SessionData.class);
+    }
+
+    public SessionInfo getSessionInfo(String token) {
+        SessionInfo info = new SessionInfo(token);
+        SessionData session = getSessionCache("sessionCache").get(token);
+        if (session != null) {
+            info.setSessionValid(true);
+            info.setRealm(session.getRealm());
+            info.setUsername(session.getUsername());
+        }
+
+        return info;
     }
 
     public String generateToken(String realm) {

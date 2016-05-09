@@ -1,6 +1,7 @@
 package com.apina.sso.core.realm;
 
 import com.apina.sso.api.Datastore;
+import com.apina.sso.api.DatastoreAttrsResponse;
 import com.apina.sso.api.DatastoreAuthResponse;
 import com.apina.sso.datastores.FileDatastore;
 import org.slf4j.Logger;
@@ -62,7 +63,6 @@ public class RealmManager {
 
     public RealmAuthResponse authenticateUser(String realmName, String username, String password) throws Exception {
         RealmItem realm = realms.get(realmName);
-
         if (realm == null) throw new Exception("Invalid realm name: " + realmName);
 
         RealmAuthResponse response = new RealmAuthResponse(realmName);
@@ -86,13 +86,28 @@ public class RealmManager {
                     response.setRealmAuthStatus(RealmAuthStatus.INVALID_PASSWORD);
                     return response;
 
-
                 case USER_NOT_FOUND:
                     // Continue to next datastore
                     logger.debug("User \"" + username + "\" not found from datastore " + ds.toString());
                     break;
             }
 
+        }
+        return response;
+    }
+
+    public RealmAttrsResponse getUserAttributes(String realmName, String username, String token) throws Exception {
+        RealmItem realm = realms.get(realmName);
+        if (realm == null) throw new Exception("Invalid realm name: " + realmName);
+
+        RealmAttrsResponse response = new RealmAttrsResponse();
+        logger.trace("Getting user \"" + username + "\" attributes from realm \"" + realmName + "\"...");
+        for (DatastoreItem ds : realm.getDatastores()) {
+            logger.trace("Requesting attributes from datastore \"" + ds.getName() + "\"...");
+            DatastoreAttrsResponse datastoreAttrsResponse = ds.getDatastore().attributes(username, token);
+            response.addGroups(datastoreAttrsResponse.getGroups());
+            response.addRoles(datastoreAttrsResponse.getRoles());
+            response.addUserAttributes(datastoreAttrsResponse.getAttributes());
         }
         return response;
     }
