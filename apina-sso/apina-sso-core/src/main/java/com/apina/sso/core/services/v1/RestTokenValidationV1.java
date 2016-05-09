@@ -15,7 +15,12 @@ public class RestTokenValidationV1 {
     private SessionManager sessionManager;
 
     @RequestMapping(value = "/v1/validate/{token}", method = RequestMethod.GET)
-    public RestResponseValidation validateToken(@PathVariable(value = "token") String token) {
+    public RestResponseValidation validateTokenPath(@PathVariable(value = "token") String token) {
+        return new RestResponseValidation(sessionManager.isTokenValid(token));
+    }
+
+    @RequestMapping(value = "/v1/validate", method = RequestMethod.GET)
+    public RestResponseValidation validateTokenHeader(@RequestHeader(value="X-ApinaSSO-Token") String token) {
         return new RestResponseValidation(sessionManager.isTokenValid(token));
     }
 }
