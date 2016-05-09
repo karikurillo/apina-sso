@@ -1,6 +1,7 @@
 package com.apina.sso.core.services.v1;
 
 import com.apina.sso.core.security.*;
+import com.apina.sso.core.services.ServiceConsts;
 import com.apina.sso.core.services.v1.pojos.RestResponseAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class RestAttributesV1 {
     }
 
     @RequestMapping(value = "/v1/attributes", method = RequestMethod.GET)
-    public RestResponseAttributes attributesHeader(@RequestHeader(value="X-ApinaSSO-Token") String token) {
+    public RestResponseAttributes attributesHeader(@RequestHeader(value = ServiceConsts.HEADER_TOKEN_V1) String token) {
         return getUserAttributes(token);
     }
 

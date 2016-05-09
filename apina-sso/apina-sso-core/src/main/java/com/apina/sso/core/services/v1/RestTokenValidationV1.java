@@ -1,5 +1,6 @@
 package com.apina.sso.core.services.v1;
 
+import com.apina.sso.core.services.ServiceConsts;
 import com.apina.sso.core.services.v1.pojos.RestResponseValidation;
 import com.apina.sso.core.session.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class RestTokenValidationV1 {
     }
 
     @RequestMapping(value = "/v1/validate", method = RequestMethod.GET)
-    public RestResponseValidation validateTokenHeader(@RequestHeader(value="X-ApinaSSO-Token") String token) {
+    public RestResponseValidation validateTokenHeader(@RequestHeader(value = ServiceConsts.HEADER_TOKEN_V1) String token) {
         return new RestResponseValidation(sessionManager.isTokenValid(token));
     }
 }

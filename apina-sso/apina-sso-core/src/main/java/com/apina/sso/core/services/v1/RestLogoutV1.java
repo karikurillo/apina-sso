@@ -1,6 +1,7 @@
 package com.apina.sso.core.services.v1;
 
 import com.apina.sso.core.security.SecurityManager;
+import com.apina.sso.core.services.ServiceConsts;
 import com.apina.sso.core.services.v1.pojos.RestResponseLogout;
 import com.apina.sso.core.services.v1.pojos.RestResponseValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class RestLogoutV1 {
     }
 
     @RequestMapping(value = "/v1/logout", method = RequestMethod.GET)
-    public RestResponseLogout logoutHeader(@RequestHeader(value="X-ApinaSSO-Token") String token) {
+    public RestResponseLogout logoutHeader(@RequestHeader(value = ServiceConsts.HEADER_TOKEN_V1) String token) {
         return new RestResponseLogout(securityManager.logoutToken(token));
     }
 }

@@ -3,6 +3,7 @@ package com.apina.sso.core.services.v1;
 import com.apina.sso.core.realm.RealmManager;
 import com.apina.sso.core.security.AuthenticationResponse;
 import com.apina.sso.core.security.SecurityManager;
+import com.apina.sso.core.services.ServiceConsts;
 import com.apina.sso.core.services.v1.pojos.RestResponseAuthentication;
 import com.apina.sso.core.session.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,12 @@ public class RestAuthenticationV1 {
     private SecurityManager securityManager;
 
     @RequestMapping(value = "/v1/authenticate", method = RequestMethod.GET)
-    public RestResponseAuthentication authenticate(@RequestHeader(value="X-ApinaSSO-Username") String username, @RequestHeader(value="X-ApinaSSO-Password") String password) {
+    public RestResponseAuthentication authenticate(@RequestHeader(value = ServiceConsts.HEADER_USERNAME_V1) String username, @RequestHeader(value = ServiceConsts.HEADER_PASSWORD_V1) String password) {
         return authenticateUser(RealmManager.ROOT_REALM, username, password);
     }
 
     @RequestMapping(value = "/v1/{realm}/authenticate", method = RequestMethod.GET)
-    public RestResponseAuthentication authenticate(@RequestHeader(value="X-ApinaSSO-Username") String username, @RequestHeader(value="X-ApinaSSO-Password") String password, @PathVariable(value = "realm") String realm) {
+    public RestResponseAuthentication authenticate(@RequestHeader(value = ServiceConsts.HEADER_USERNAME_V1) String username, @RequestHeader(value = ServiceConsts.HEADER_PASSWORD_V1) String password, @PathVariable(value = "realm") String realm) {
         return authenticateUser(realm, username, password);
     }
 
