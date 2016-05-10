@@ -48,8 +48,12 @@ public class RealmManager {
             for (DatastoreItem ds : entry.getValue().getDatastores()) {
                 logger.info("Configuring datastore \"" + ds.getName() +"\"...");
                 try {
-                    // @ TODO Dynamic creation
-                    Datastore dsImpl = new FileDatastore();
+                    // Instantiate class
+                    // We could use Spring to create the datastore objects, but
+                    // for now we do not want to enable injection in them.
+                    @SuppressWarnings("rawtypes")
+                    Class clazz = Class.forName(ds.getClassName(), true, this.getClass().getClassLoader());
+                    Datastore dsImpl = (Datastore)clazz.newInstance();
                     dsImpl.configure(entry.getKey(), ds.getConfiguration());
 
                     ds.setDatastore(dsImpl);
