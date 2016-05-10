@@ -39,6 +39,7 @@ public class CoreConfigurationManager {
 
     public void initialize(String... args) throws Exception {
         logger.info("Parsing commandline arguments to determine Configurator...");
+        // TODO select and initialize appropriate configurator
         initConfigurationFromFile(args[0]);
 
         realmManager.initializeDatastores();
