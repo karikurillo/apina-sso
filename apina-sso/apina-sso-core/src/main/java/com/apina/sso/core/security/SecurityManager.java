@@ -32,20 +32,28 @@ public class SecurityManager {
     public AuthenticationResponse authenticateUser(String realm, String username, String password) throws Exception {
         RealmAuthResponse realmAuthResponse = realmManager.authenticateUser(realm, username, password);
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-        authenticationResponse.setToken(sessionManager.createSession(realm, username, null));
-        authenticationResponse.setRealmAuthResponse(realmAuthResponse);
-        authenticationResponse.setAuthenticated(realmAuthResponse.getRealmAuthStatus() == RealmAuthStatus.LOGIN_SUCCESSFUL);
+        if (realmAuthResponse.getRealmAuthStatus() == RealmAuthStatus.LOGIN_SUCCESSFUL) {
+            authenticationResponse.setToken(sessionManager.createSession(realm, username, realmAuthResponse.getSessionAttributes()));
+            authenticationResponse.setRealmAuthResponse(realmAuthResponse);
+            authenticationResponse.setAuthenticated(realmAuthResponse.getRealmAuthStatus() == RealmAuthStatus.LOGIN_SUCCESSFUL);
+            logger.info("Authentication successful: realm=" + realm + ", user=" + username + ", token=" + authenticationResponse.getToken());
+        } else {
+            logger.info("Authentication failed: realm=" + realm + ", user=" + username);
+        }
 
         return authenticationResponse;
     }
 
     public boolean logoutToken(String token) {
         try {
-            return sessionManager.logout(token);
+            if (sessionManager.logout(token)) {
+                logger.info("Logout successful: token=" + token);
+                return true;
+            }
         } catch (Exception e) {
             logger.error("Could not logout session with token " + token);
-            return false;
         }
+        return false;
     }
 
     public AttributesResponse getUserAttributes(String token) throws Exception {
@@ -59,6 +67,7 @@ public class SecurityManager {
             RealmAttrsResponse realmAttrsResponse = realmManager.getUserAttributes(sessionInfo.getRealm(), sessionInfo.getUsername(), sessionInfo.getToken());
             attributesResponse.setGroups( realmAttrsResponse.getGroups() );
             attributesResponse.setRoles( realmAttrsResponse.getRoles() );
+            // Attributes from datastore
             attributesResponse.setUserAttributes( realmAttrsResponse.getUserAttributes() );
         }
 

@@ -12,7 +12,9 @@ public class RealmAuthResponse {
     private String realm;
     private String datastoreName;
     private String datastoreId;
+    // Returned with authentication response
     private Map<String, String> responseAttributes;
+    // Put to session and available for datastores
     private Map<String, String> sessionAttributes;
 
     public RealmAuthResponse(String realm) {

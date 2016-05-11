@@ -45,4 +45,8 @@ public class SessionData {
             }
         }
     }
+
+    public Map<String, String> getAttributes() {
+        return attributes;
+    }
 }

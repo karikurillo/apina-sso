@@ -2,8 +2,7 @@ package com.apina.sso.core.security;
 
 import com.apina.sso.core.session.SessionInfo;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Kari Kurillo on 9.5.2016.
@@ -13,6 +12,10 @@ public class AttributesResponse {
     private Set<String> groups;
     private Set<String> roles;
     private Map<String, String> userAttributes;
+
+    public AttributesResponse() {
+        this.userAttributes = new HashMap<String, String>();
+    }
 
     public SessionInfo getSessionInfo() {
         return sessionInfo;
@@ -26,8 +29,8 @@ public class AttributesResponse {
         return userAttributes;
     }
 
-    public void setUserAttributes(Map<String, String> userAttributes) {
-        this.userAttributes = userAttributes;
+    public void setUserAttributes(Map<String, String> attributes) {
+        if (attributes != null) this.userAttributes.putAll(attributes);
     }
 
     public Set<String> getGroups() {

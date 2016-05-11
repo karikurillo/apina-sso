@@ -37,7 +37,9 @@ public class RestAttributesV1 {
             RestResponseAttributes restResponseAttributes = new RestResponseAttributes();
             restResponseAttributes.setGroups(attributesResponse.getGroups());
             restResponseAttributes.setRoles(attributesResponse.getRoles());
+            // User attributes
             restResponseAttributes.setAttributes(attributesResponse.getUserAttributes());
+
             return restResponseAttributes;
         }
 

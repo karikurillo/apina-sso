@@ -105,6 +105,7 @@ public class SessionManager {
             info.setSessionValid(true);
             info.setRealm(session.getRealm());
             info.setUsername(session.getUsername());
+            info.setSessionAttributes(session.getAttributes());
         }
 
         return info;

@@ -1,5 +1,8 @@
 package com.apina.sso.core.session;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * Created by Kari Kurillo on 9.5.2016.
  */
@@ -8,8 +11,11 @@ public class SessionInfo {
     private String realm;
     private String token;
     boolean sessionValid = false;
+    private Map<String, String> sessionAttributes;
 
-    public SessionInfo() {}
+    public SessionInfo() {
+        this.sessionAttributes = Collections.EMPTY_MAP;
+    }
 
     public SessionInfo(String token) {
         this.token = token;
@@ -45,5 +51,13 @@ public class SessionInfo {
 
     public void setSessionValid(boolean sessionValid) {
         this.sessionValid = sessionValid;
+    }
+
+    public Map<String, String> getSessionAttributes() {
+        return sessionAttributes;
+    }
+
+    public void setSessionAttributes(Map<String, String> attributes) {
+        this.sessionAttributes = attributes;
     }
 }
