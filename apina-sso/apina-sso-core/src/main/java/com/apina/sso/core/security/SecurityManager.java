@@ -1,5 +1,6 @@
 package com.apina.sso.core.security;
 
+import com.apina.sso.core.exceptions.InvalidTokenException;
 import com.apina.sso.core.realm.RealmAttrsResponse;
 import com.apina.sso.core.realm.RealmAuthResponse;
 import com.apina.sso.core.realm.RealmAuthStatus;
@@ -27,7 +28,9 @@ public class SecurityManager {
     @Autowired
     private SessionManager sessionManager;
 
-    public SecurityManager() {}
+    public SecurityManager() {
+        logger.info("Initializing SecurityManager...");
+    }
 
     public AuthenticationResponse authenticateUser(String realm, String username, String password) throws Exception {
         RealmAuthResponse realmAuthResponse = realmManager.authenticateUser(realm, username, password);
@@ -62,7 +65,8 @@ public class SecurityManager {
         attributesResponse.setSessionInfo(sessionInfo);
 
         if (!sessionInfo.isSessionValid()) {
-            throw new RuntimeException("Not a valid token");
+            logger.info("Invalid token: " + token);
+            throw new InvalidTokenException("Invalid token: " + token);
         } else {
             RealmAttrsResponse realmAttrsResponse = realmManager.getUserAttributes(sessionInfo.getRealm(), sessionInfo.getUsername(), sessionInfo.getToken(), sessionInfo.getSessionAttributes());
             attributesResponse.setGroups( realmAttrsResponse.getGroups() );
