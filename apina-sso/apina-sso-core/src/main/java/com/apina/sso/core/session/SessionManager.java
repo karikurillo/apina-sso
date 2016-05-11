@@ -45,6 +45,10 @@ public class SessionManager {
     private long maxSessionIdleTime = 30;
     private long maxSessionTime = 0;
 
+    public SessionManager() {
+        logger.info("Initializing SessionManager...");
+    }
+
     public String createSession(String realm, String username, Map<String, String> sessionAttributes) throws Exception {
         // Generate id token for the session
         String token = generateToken(realm);

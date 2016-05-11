@@ -34,7 +34,7 @@ public class CoreConfigurationManager {
     private Configurator configurator;
 
     public CoreConfigurationManager() {
-
+        logger.info("Initializing CoreConfigurationManager...");
     }
 
     public void initialize(String... args) throws Exception {

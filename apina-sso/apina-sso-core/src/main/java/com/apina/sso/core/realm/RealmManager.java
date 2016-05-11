@@ -25,6 +25,7 @@ public class RealmManager {
     private Map<String, RealmItem> realms;
 
     public RealmManager() {
+        logger.info("Initializing RealmManager...");
         this.realms = new TreeMap<String, RealmItem>();
     }
 
