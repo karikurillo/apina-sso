@@ -100,7 +100,7 @@ public class RealmManager {
         return response;
     }
 
-    public RealmAttrsResponse getUserAttributes(String realmName, String username, String token) throws Exception {
+    public RealmAttrsResponse getUserAttributes(String realmName, String username, String token, Map<String, String> sessionAttributes) throws Exception {
         RealmItem realm = realms.get(realmName);
         if (realm == null) throw new Exception("Invalid realm name: " + realmName);
 
@@ -108,7 +108,7 @@ public class RealmManager {
         logger.trace("Getting user \"" + username + "\" attributes from realm \"" + realmName + "\"...");
         for (DatastoreItem ds : realm.getDatastores()) {
             logger.trace("Requesting attributes from datastore \"" + ds.getName() + "\"...");
-            DatastoreAttrsResponse datastoreAttrsResponse = ds.getDatastore().attributes(username, token);
+            DatastoreAttrsResponse datastoreAttrsResponse = ds.getDatastore().attributes(username, token, sessionAttributes);
             response.addGroups(datastoreAttrsResponse.getGroups());
             response.addRoles(datastoreAttrsResponse.getRoles());
             response.addUserAttributes(datastoreAttrsResponse.getAttributes());

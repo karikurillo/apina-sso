@@ -22,7 +22,7 @@ public class JdbcDatastore extends AbstractDatastore {
     }
 
     @Override
-    public DatastoreAttrsResponse getUserAttributes(String username, String token) throws Exception {
+    public DatastoreAttrsResponse getUserAttributes(String username, String token, Map<String, String> sessionAttributes) throws Exception {
         return null;
     }
 }

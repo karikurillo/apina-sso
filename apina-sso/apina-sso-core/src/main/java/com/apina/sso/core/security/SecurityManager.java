@@ -64,7 +64,7 @@ public class SecurityManager {
         if (!sessionInfo.isSessionValid()) {
             throw new RuntimeException("Not a valid token");
         } else {
-            RealmAttrsResponse realmAttrsResponse = realmManager.getUserAttributes(sessionInfo.getRealm(), sessionInfo.getUsername(), sessionInfo.getToken());
+            RealmAttrsResponse realmAttrsResponse = realmManager.getUserAttributes(sessionInfo.getRealm(), sessionInfo.getUsername(), sessionInfo.getToken(), sessionInfo.getSessionAttributes());
             attributesResponse.setGroups( realmAttrsResponse.getGroups() );
             attributesResponse.setRoles( realmAttrsResponse.getRoles() );
             // Attributes from datastore

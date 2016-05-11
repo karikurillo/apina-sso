@@ -135,7 +135,7 @@ public class FileDatastore extends AbstractDatastore {
     }
 
     @Override
-    public DatastoreAttrsResponse getUserAttributes(String username, String token) throws Exception {
+    public DatastoreAttrsResponse getUserAttributes(String username, String token, Map<String, String> sessionAttributes) throws Exception {
         DatastoreAttrsResponse datastoreAttrsResponse = new DatastoreAttrsResponse();
         User user = getUsers().get(username);
 
