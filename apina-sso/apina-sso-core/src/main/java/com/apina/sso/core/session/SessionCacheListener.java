@@ -2,6 +2,7 @@ package com.apina.sso.core.session;
 
 import org.ehcache.event.CacheEvent;
 import org.ehcache.event.CacheEventListener;
+import org.ehcache.event.EventType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +15,9 @@ public class SessionCacheListener implements CacheEventListener<String, SessionD
 
     @Override
     public void onEvent(CacheEvent<String, SessionData> event) {
-        logger.debug("Received event from session cache: " + event.getType());
+        if (event.getType() == EventType.EXPIRED || event.getType() == EventType.EVICTED) {
+            logger.info("Expired session: user=" + event.getOldValue().getUsername() + ", token=" + event.getOldValue().getToken());
+        }
     }
 
 }
