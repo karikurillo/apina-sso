@@ -1,7 +1,9 @@
 {
   "configuration": {
+    "version": "1.0",
     "maxSessionIdleTime": 30,
     "maxSessionTime": 120,
+    "requireApiKey": "false",
     "realms": [
       {
         "name": "/",
@@ -17,6 +19,18 @@
           }
         ]
       }
+    ],
+    "apiKeys": [
+      {
+         "id": "myhost",
+         "apiKey": "qwerty",
+         "realms": [
+            "/"
+         ]
+      }
+    ],
+    "whitelist": [
+        "localhost"
     ]
   }
 }
