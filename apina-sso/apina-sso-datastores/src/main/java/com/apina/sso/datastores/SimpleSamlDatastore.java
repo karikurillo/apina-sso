@@ -7,10 +7,9 @@ import com.apina.sso.api.DatastoreAuthResponse;
 import java.util.Map;
 
 /**
- *
+ * Created by Kari Kurillo on 19/05/16.
  */
-public class JdbcDatastore extends AbstractDatastore {
-
+public class SimpleSamlDatastore extends AbstractDatastore {
     @Override
     public void configureDatastore(String realm, Map<String, String> configuration) throws Exception {
         throw new RuntimeException("Method not implemented");
